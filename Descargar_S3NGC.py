@@ -2,6 +2,9 @@
 
 #@author: Gabriela Resendiz Colorado 
 #Posgrado en Ecologia Marina
+#Este código fue generado para descargar las imágenes diarias disponibles sobre una región definida en bbox,
+#fue configurado para correr en una instalación de python en windows, es necesario instalar la librería eumdac y contar con el consumer key y secret.
+
 
 import os
 import eumdac
@@ -15,8 +18,8 @@ day1=date.today()
 day2=day1+timedelta(days=1)
 
 
-consumer_key='hCOdrJF2oo469sh7Y0U5nvwb2Xca'
-consumer_secret='eT20D2lCFc3e98xi2RQYtfUdbm8a'
+consumer_key='tu consumer key aqui'
+consumer_secret='tu consumer secret aqui'
 
 credentials = (consumer_key, consumer_secret)
 token = eumdac.AccessToken(credentials)
@@ -30,8 +33,8 @@ datastore.collections;
 selected_collection = datastore.get_collection('EO:EUM:DAT:0407')
 
 
-# Set bounding-box coordinates
-bbox = '-115,29,-112,32'
+# Set bounding-box coordinates/coordenadas que definen el área para buscar las imágenes
+bbox = 'oeste,sur,este,norte' #sustituir por las coordenadas correspondientes
 
 # Retrieve datasets that match our filter
 products = selected_collection.search(bbox=bbox, dtstart=day1, 
@@ -41,7 +44,7 @@ os.chdir(r'I:\Monitoreo_TR2020\Descargas')
 print(f'Found Datasets: {len(products)} datasets for the given time range') 
 
 for product in products:
-    with product.open() as fsrc,open(os.path.join(r'I:\Monitoreo_TR2020\Descargas',fsrc.name), mode='wb') as fdst:
+    with product.open() as fsrc,open(os.path.join(r'ruta_donde_seguardan_lasimagenes',fsrc.name), mode='wb') as fdst:
         shutil.copyfileobj(fsrc, fdst)
         print(f'Download of product {product} finished.')
 
@@ -49,6 +52,7 @@ for product in products:
 print('All downloads are finished.')
 
 
+#Esta parte del código descomprimi los archivos zip de las imágenes en otra carpeta, a partir de la que se generarán los mosaicos con el programa SNAP.
 
 # importing required modules
 
@@ -56,82 +60,15 @@ from zipfile import ZipFile
   
 # specifying the zip file name
 
-file_name=os.listdir(r'I:\Monitoreo_TR2020\Descargas')
+file_name=os.listdir(r'ruta_dondeseguardaron_lasimagenes')
 
 # opening the zip file in READ mode
 
 for i in file_name:
     myZip=ZipFile(os.path.abspath(i))
-    myZip.extractall(r'I:\Monitoreo_TR2020\Unzip')
-    
-    #with ZipFile(f,'r') as zip:
-    #zip.extractall(r'I:\Monitoreo_TR2020\Unzip')
-        
-        
-#import subprocess
+    myZip.extractall(r'ruta_dondesevan_adescomprimir')
 
-#subprocess.call('/mnt/i/Monitoreo_TR2020/Subsetymosaico.bash')
-
-
-#os.system('I:\Monitoreo_TR2020\Subsetymosaico.bash')
-
-
-
-###########CODIGO ANTERIOR AL CAMBIO DE SEPTIEMBRE DE 2022
-
-
-#today = date.today()
-#day1=today.strftime('%Y%m%d')
-#day2=today+timedelta(days=1)
-#day2=day2.strftime('%Y%m%d')
-
-
-#'https://coda.eumetsat.int/'
-
-#day1='20170106'
-#day2='20170125'
-
-#os.chdir('I:\Monitoreo_TR2020\Descargas')
-
-#api = SentinelAPI('gresendiz', 'palomus2021','https://coda.eumetsat.int/')
-
-
-#footprint= geojson_to_wkt(read_geojson(r'I:\Monitoreo_TR2020\Mapa_GC.geojson'))
-
-
-#products = api.query(footprint,date=(day1,day2),producttype= 'OL_2_WFR___')
-
-
-#for ii in products.keys():
-#  api.download(ii, "")
-
-#api.download_all(products)
-
-
-
-# importing required modules
-
-#from zipfile import ZipFile
-  
-# specifying the zip file name
-
-#file_name =os.listdir('I:\Monitoreo_TR2020\Descargas')
-
-  
-# opening the zip file in READ mode
-
-
-#for i in file_name:
-
- #with ZipFile(i,'r') as zip:
-     
- # zip.extractall(r'I:\Monitoreo_TR2020\Unzip')
-        
-        
-# import subprocess
-
-# subprocess.call('/mnt/i/Monitoreo_TR2020/Subsetymosaico.bash')
-
+       
         
         
         
